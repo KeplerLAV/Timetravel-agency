@@ -6,6 +6,7 @@ import Destinations from "./components/Destinations";
 import Quiz from "./components/Quiz";
 import Chatbot, { ChatMessage } from "./components/Chatbot";
 import Footer from "./components/Footer";
+import { DESTINATIONS_CATALOG } from "./data/destinationsData"; // 🌟 Importation de notre catalogue étendu
 
 export default function App() {
   // États pour le contrôle de la Conciergerie / Chatbot
@@ -13,41 +14,46 @@ export default function App() {
   const [chatMessages, setChatMessages] = useState<ChatMessage[]>([
     { 
       sender: "bot", 
-      text: "Salutations voyageur. Je suis Chronos, l'assistant IA de TimeTravel Agency. Quelle époque mythique rêvez-vous d'explorer ?" 
+      text: "Salutations voyageur. Je suis Chronos, l'assistant IA de TimeTravel Agency. Quelle époque mythique rêvez-vous d'explorer parmi nos 9 couloirs quantiques ?" 
     }
   ]);
 
-  // Gestion de l'action déclenchée par le Quiz et les Destinations
+  // Gestion de l'action déclenchée par le Quiz et la galerie des Destinations
   const handleSelectDestination = (destinationName: string) => {
     setIsChatOpen(true);
+    const selected = DESTINATIONS_CATALOG[destinationName];
+    
     setChatMessages(prev => [
       ...prev,
       { sender: "user", text: `Je souhaite configurer mon saut pour : ${destinationName}` },
       { 
         sender: "bot", 
-        text: `Excellent choix. Le protocole pour rejoindre "${destinationName}" nécessite une validation de vos constantes biologiques. Souhaitez-vous planifier vos dates d'excursion ?` 
+        text: `Excellent choix. ${selected ? selected.botDescription : ""} Le coût énergétique requis est fixé à ${selected ? selected.price : "sur demande"}. Souhaitez-vous planifier vos dates d'excursion spatio-temporelle ?` 
       }
     ]);
   };
 
-  // Traitement des messages envoyés par l'utilisateur dans le Chatbot
+  // Traitement des messages envoyés manuellement par l'utilisateur dans le Chatbot
   const handleUserMessage = (text: string) => {
     const newMessages: ChatMessage[] = [...chatMessages, { sender: "user", text }];
     setChatMessages(newMessages);
 
-    // Simulation de la réponse de l'IA de bord (Chronos)
+    // Simulation de la réponse de l'IA (Chronos) à l'aide du catalogue
     setTimeout(() => {
-      let response = "Je traite votre requête temporelle. Nos dômes de confinement quantique garantissent un voyage sans altération de la timeline.";
+      let response = "Je traite votre requête temporelle. Mes capteurs n'ont pas détecté de faille pour cette demande exacte. Essayez une époque phare comme l'Égypte Antique, Kyoto 1603, l'Atlantide ou Paris 1889 !";
       const cleanText = text.toLowerCase();
       
-      if (cleanText.includes("paris") || cleanText.includes("1889")) {
-        response = "Paris 1889 (La Belle Époque) est actuellement disponible à partir de 15 000 TempCoins. L'immersion inclut l'accès VIP à l'Exposition Universelle.";
-      } else if (cleanText.includes("cretace") || cleanText.includes("dinosaure")) {
-        response = "Le Crétacé (-65M) exige une combinaison environnementale de classe 4. Les excursions d'observation des prédateurs géants sont fixées à 25 000 TempCoins.";
-      } else if (cleanText.includes("florence") || cleanText.includes("1504") || cleanText.includes("renaissance")) {
-        response = "Florence 1504 est accessible pour 18 000 TempCoins. Vous profiterez d'une accréditation exclusive pour visiter l'atelier secret de Michel-Ange.";
-      } else if (cleanText.includes("prix") || cleanText.includes("tarif") || cleanText.includes("combien")) {
-        response = "Nos tarifs standards de transfert : Paris 1889 (15 000 $TC), Florence 1504 (18 000 $TC), Crétacé -65M (25 000 $TC).";
+      // 🌟 Détection automatique de n'importe quel mot-clé parmi les 9 destinations
+      Object.keys(DESTINATIONS_CATALOG).forEach((key) => {
+        const dest = DESTINATIONS_CATALOG[key];
+        if (cleanText.includes(dest.id) || cleanText.includes(key.toLowerCase())) {
+          response = `${dest.botDescription} Le prix de la distorsion pour ce saut est de ${dest.price}. Nos dômes de confinement garantissent un voyage sans paradoxe temporel.`;
+        }
+      });
+
+      // Gestion globale des questions sur les tarifs
+      if (cleanText.includes("prix") || cleanText.includes("tarif") || cleanText.includes("combien")) {
+        response = "Nos tarifs standards s'échelonnent de 14 000 $TC (New York 1925) à 40 000 $TC (L'Atlantide). Indiquez-moi une destination précise pour obtenir ses coordonnées de facturation.";
       }
       
       setChatMessages(prev => [...prev, { sender: "bot", text: response }]);
@@ -69,7 +75,7 @@ export default function App() {
       {/* Module Quiz Concierge IA */}
       <Quiz onSelectDestination={handleSelectDestination} />
       
-      {/* Pied de page */}
+      {/* Pied de page autonome */}
       <Footer />
 
       {/* Widget Flottant de l'IA (Chatbot) */}
