@@ -3,10 +3,10 @@
 Projet Pédagogique - Mastère 2 Cloud, Security & Infrastructure (Ynov Paris).
 
 ## 👥 Membres du groupe
-- Daniel DA CUNHA GOMES
-- [Nom Prénom Équipier 2]
-- [Nom Prénom Équipier 3]
-- [Nom Prénom Équipier 4]
+- DA CUNHA GOMES Daniel
+- MBOMA MULALA Klein
+- LOUREIRO Anthony
+- GEUFFRARD Hugo
 
 ## 🛠️ Stack Technique
 - React + TypeScript (Vite)
